@@ -19,13 +19,7 @@
   --f-dou:"Source Serif 4",Georgia,"Times New Roman",serif;
   --f-mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E1618; --surface:#162125; --sunk:#1C292E; --ink:#E3EBEA; --muted:#93A5AA; --line:#2B3B40;
-  --accent:#62C3B6; --accent-ink:#0E1618;
-  --id:#93B4F2; --id-bg:#1B2A45; --prev:#E5BA5E; --prev-bg:#352B10;
-  --old:#F29379; --old-bg:#3B211A; --new:#78D597; --new-bg:#163222; --warn:#E5BA5E; --warn-bg:#352B10;
-  color-scheme:dark}}
-:root[data-theme="dark"]{
+:root:not([data-modo="claro"]){
   --bg:#0E1618; --surface:#162125; --sunk:#1C292E; --ink:#E3EBEA; --muted:#93A5AA; --line:#2B3B40;
   --accent:#62C3B6; --accent-ink:#0E1618;
   --id:#93B4F2; --id-bg:#1B2A45; --prev:#E5BA5E; --prev-bg:#352B10;
@@ -140,6 +134,9 @@ mark.ok{background:var(--new-bg);color:var(--new);border-radius:2px;padding:0 2p
 .tabpanel{padding:20px;display:grid;gap:18px}
 .formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 14px}
 .formgrid .wide{grid-column:1/-1}
+/* rótulos que quebram linha não desalinham as caixas: o rótulo encosta embaixo */
+.formgrid > .field{grid-template-rows:1fr auto}
+.formgrid > .field > label{align-self:end}
 .field{display:grid;gap:4px;min-width:0}
 .field label{font:600 .8rem var(--f-body);color:var(--muted)}
 .field input,.field select,textarea{font:400 .95rem var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:8px 10px;width:100%;min-width:0}
@@ -178,6 +175,7 @@ textarea{min-height:150px;font:400 .98rem/1.6 var(--f-dou);resize:vertical}
 
 footer{padding-block:40px 64px;border-top:1px solid var(--line);font-size:.88rem;color:var(--muted)}
 footer .wrap{display:grid;gap:10px}
+footer .contato{text-align:center}
 
 @media (max-width:760px){
   .stage{grid-template-columns:1fr}
@@ -191,8 +189,7 @@ footer .wrap{display:grid;gap:10px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 /* ===== Pop-up "Onde encontrar" ===== */
 :root{--paper:#FFFFFF;--paper-ink:#1D2328;--paper-muted:#7A858C;--paper-band:#EEF1F2;--marker:#FFE27A;--marker-ink:#14212A;--pin:#14212A;--pin-ink:#FFFFFF;--scrim:rgba(10,20,24,.55)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--scrim:rgba(0,0,0,.7);--pin:#FFE27A;--pin-ink:#14212A}}
-:root[data-theme="dark"]{--scrim:rgba(0,0,0,.7);--pin:#FFE27A;--pin-ink:#14212A}
+:root:not([data-modo="claro"]){--scrim:rgba(0,0,0,.7);--pin:#FFE27A;--pin-ink:#14212A}
 
 .help{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:6px;border-radius:50%;border:1px solid var(--accent);background:transparent;color:var(--accent);font:800 .7rem/1 var(--f-display,system-ui);cursor:pointer;vertical-align:1px;padding:0}
 .help:hover,.help:focus-visible{background:var(--accent);color:var(--accent-ink)}
@@ -251,11 +248,45 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
   .hp-modal{max-height:94%}
 }
 
+
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.modo{display:inline-flex;align-items:center;gap:6px;font:600 .82rem var(--f-body);padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.modo:hover{border-color:var(--accent)}
+.modo svg{width:15px;height:15px}
+:root[data-modo="claro"]{color-scheme:light}
+/* ===== Campos de data: máscara + calendário ===== */
+.dwrap{position:relative;display:block;min-width:0}
+.dwrap > input{padding-right:38px;width:100%}
+.dcal-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:0;border-radius:5px;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:0}
+.dcal-btn:hover,.dcal-btn[aria-expanded="true"]{color:var(--accent);background:var(--sunk)}
+.dcal-btn svg{width:18px;height:18px}
+.dcal{position:fixed;z-index:45;width:288px;box-sizing:border-box;max-width:calc(100vw - 24px);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.28);padding:12px;display:grid;gap:10px;font-family:var(--f-body,system-ui)}
+.dcal-hd{display:grid;grid-template-columns:32px minmax(0,1.35fr) minmax(0,1fr) 32px;gap:6px;align-items:center}
+.dcal-hd button{width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:1rem;line-height:1}
+.dcal-hd button:hover{border-color:var(--accent)}
+.dcal-hd select{font:600 .86rem var(--f-body,system-ui);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 4px;min-width:0;width:100%}
+.dcal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;text-align:center}
+.dcal-grid .wd{font:700 .7rem var(--f-display,system-ui);letter-spacing:.06em;color:var(--muted);padding:4px 0;text-transform:uppercase}
+.dcal-grid button{height:34px;border:0;border-radius:6px;background:transparent;color:var(--ink);font:500 .88rem var(--f-body,system-ui);cursor:pointer;font-variant-numeric:tabular-nums}
+.dcal-grid button:hover{background:var(--sunk)}
+.dcal-grid button.out{color:var(--muted);opacity:.55}
+.dcal-grid button.today{box-shadow:inset 0 0 0 1px var(--accent)}
+.dcal-grid button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.dcal-grid button.fut{opacity:.3;cursor:not-allowed;text-decoration:line-through}
+.dcal-grid button.fut:hover{background:transparent}
+.dcal-hd button:disabled{opacity:.35;cursor:not-allowed}
+.dcal-hd select option:disabled{color:var(--muted)}
+.dcal-ft-r{display:flex;gap:6px}
+.dcal-grid button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.dcal-ft{display:flex;justify-content:space-between;gap:8px}
+.dcal-ft button{font:600 .78rem var(--f-body,system-ui);padding:6px 8px;white-space:nowrap;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.dcal-ft button:hover{border-color:var(--accent)}
 </style>
+<script>try{if(localStorage.getItem("modo-retificacao")==="claro")document.documentElement.setAttribute("data-modo","claro")}catch(e){}</script>
 
 <header>
   <div class="wrap">
-    <span class="eyebrow">CGLic · Iphan — guia de redação de extratos</span>
+    <div class="toprow"><span class="eyebrow">CGLic/Iphan — guia de redação de extratos</span><button type="button" class="modo" id="modo" aria-pressed="false"></button></div>
     <h1>Retificação em extrato padrão</h1>
     <p class="lede read">Uma retificação diz <em>onde</em> está o texto, <em>o que</em> está escrito hoje e <em>o que</em> passa a valer. Quando todas seguem a mesma frase, qualquer pessoa reconstrói a história da autorização sem abrir o processo, e o <a href="https://consulta-portarias.vercel.app/" target="_blank" rel="noopener">sistema de consulta de portarias</a> pode registrar cada retificação sem digitação manual.</p>
     <p class="fict"><span class="tag">Dados fictícios</span><span>Portarias, processos, empreendimentos e nomes deste guia são inventados, para fins de exemplo. Os padrões de escrita foram observados em retificações reais publicadas no DOU.</span></p>
@@ -346,7 +377,7 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
 <section id="ferramenta" aria-labelledby="h-ferr">
   <div class="wrap">
     <span class="eyebrow">5 · Na prática</span>
-    <h2 id="h-ferr">Monte ou confira a sua retificação</h2>
+    <h2 id="h-ferr">Monte ou confira a retificação</h2>
     <div class="tool">
       <div class="tabs" role="tablist">
         <button role="tab" id="tab-g" aria-selected="true" aria-controls="pan-g">Gerar o texto</button>
@@ -356,15 +387,16 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
         <p class="muted">Preencha com os dados da portaria original. O formulário já vem com o exemplo fictício da 2ª retificação. Clique em <span class="help" aria-hidden="true" style="pointer-events:none">?</span> ao lado de cada campo para ver onde a informação está no DOU.</p>
         <div class="formgrid">
           <div class="field"><label for="g-port">Portaria nº</label><input id="g-port" inputmode="numeric" value="123"></div>
-          <div class="field"><label for="g-ano">Ano da portaria</label><input id="g-ano" inputmode="numeric" value="2026"></div>
+          <div class="field"><label for="g-dass">Data da portaria</label><input id="g-dass" value="02/03/2026" placeholder="dd/mm/aaaa"></div>
           <div class="field"><label for="g-anexo">Anexo</label><select id="g-anexo"></select></div>
-          <div class="field"><label for="g-tipo">Tipo do item</label><select id="g-tipo"><option>Autorização</option><option>Renovação</option><option>Permissão</option></select><span class="hint">Confira no “resolve”.</span></div>
+          <div class="field"><label for="g-tipo">Tipo do item</label><select id="g-tipo"><option>Autorização</option><option>Renovação</option><option>Permissão</option></select></div>
           <div class="field"><label for="g-item">Item nº</label><input id="g-item" inputmode="numeric" value="07"></div>
           <div class="field"><label for="g-proc">Processo</label><input id="g-proc" value="01234.000567/2026-89" placeholder="00000.000000/0000-00"></div>
           <div class="field"><label for="g-data">Publicada no DOU em</label><input id="g-data" value="03/03/2026" placeholder="dd/mm/aaaa"></div>
           <div class="field"><label for="g-pag">Página</label><input id="g-pag" inputmode="numeric" value="41"></div>
           <div class="field wide"><label for="g-n">Esta será a</label><select id="g-n"><option value="1">1ª retificação desta autorização</option><option value="2" selected>2ª retificação desta autorização</option><option value="3">3ª retificação desta autorização</option><option value="4">4ª retificação desta autorização</option><option value="5">5ª retificação desta autorização</option><option value="6">6ª retificação desta autorização</option><option value="7">7ª retificação desta autorização</option><option value="8+">8ª ou posterior — informar o número</option></select></div>
-          <div class="field" id="g-nxw" hidden><label for="g-nx">Número desta retificação</label><input id="g-nx" type="number" min="8" max="99" step="1" inputmode="numeric" value="8"><span class="hint" id="g-nxh"></span></div>
+          <div class="field" id="g-nxw" hidden><label for="g-nx">Número desta retificação</label><input id="g-nx" type="number" min="8" max="99" step="1" inputmode="numeric" value="8"></div>
+          <p class="hint wide muted" id="g-nxh" hidden style="font-size:.8rem;margin:0"></p>
           <fieldset class="wide" id="g-prev"><legend id="g-prevlg">Dados da 1ª retificação</legend>
             <div class="formgrid">
               <div class="field"><label for="g-pdata">Publicada no DOU em</label><input id="g-pdata" value="14/04/2026" placeholder="dd/mm/aaaa"></div>
@@ -375,7 +407,7 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
           <div class="field wide"><label for="g-leia">Leia-se — mesmo rótulo, valor novo</label><input id="g-leia" value="Arqueóloga Coordenadora de Campo: Marina Sátiro Bezerra"></div>
         </div>
         <div class="out" aria-live="polite"><p class="dou" id="g-out"></p></div>
-        <p class="muted" style="font-size:.9rem">Vai corrigir mais de um campo da mesma autorização? Use a ferramenta completa <a href="https://claude.ai/artifact/RSz62747pY5Tq6nsPSN2pp" target="_blank" rel="noopener">Monte ou confira a sua retificação</a>, que monta os pares emendados por “; e onde se lê:”.</p>
+        <p class="muted" style="font-size:.9rem">Vai corrigir mais de um campo da mesma autorização? Use a ferramenta completa <a href="https://licdados.github.io/retifica/" target="_blank" rel="noopener">Monte ou confira a retificação</a>, que monta os pares emendados por “; e onde se lê:”.</p>
         <div class="controls">
           <button type="button" class="btn primary" id="g-copy">Copiar texto</button>
           <button type="button" class="btn" id="g-check">Verificar este texto</button>
@@ -401,8 +433,8 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
     <span class="eyebrow">6 · Antes de enviar para publicação</span>
     <h2 id="h-check">Nove conferências</h2>
     <ol class="rules">
-      <li><b>Ordem fixa</b>Portaria → Anexo → Item → Processo → publicada no DOU em → Seção 1 → Página → (retificação anterior) → onde se lê → leia-se.</li>
-      <li><b>Portaria como número/ano</b>“Portaria nº 123/2026”. Sem a data de assinatura por extenso.</li>
+      <li><b>Ordem fixa</b>Portaria (número e data) → Anexo → Item → Processo → publicada no DOU em → Seção 1 → Página → (retificação anterior) → onde se lê → leia-se.</li>
+      <li><b>Portaria com número e data</b>“Portaria nº 123, de 2 de março de 2026”: a data de assinatura, como no título do ato, por extenso, mês em minúsculas e “1º” no primeiro dia do mês.</li>
       <li><b>Tipo do item igual ao do anexo</b>Autorização, Renovação ou Permissão, conforme o inciso do <em>resolve</em> que trata daquele anexo.</li>
       <li><b>Formatos fixos</b>“nº” com o sobrescrito (não “n°”), “Seção 1” em algarismo arábico, datas dd/mm/aaaa com zeros, processo 00000.000000/0000-00.</li>
       <li><b>Onde se lê = texto vigente</b>Copie literalmente a linha que está valendo, com rótulo e eventuais erros. A correção vai só no leia-se.</li>
@@ -416,12 +448,259 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
 
 <footer>
   <div class="wrap">
-    <p>Baseado no documento “Orientações para retificações de portarias” (CGLic/Iphan) e no modelo de extrato para a 2ª retificação em diante.</p>
-    <p>Retificações reais analisadas: DOU de <a href="https://www.in.gov.br/web/dou/-/retificacao-736569856" target="_blank" rel="noopener">06/10/2026, Seção 1, Página 14</a> e de <a href="https://www.in.gov.br/web/dou/-/retificacoes-739938842" target="_blank" rel="noopener">23/10/2026, Seção 1, Página 22</a>. Portarias de referência: <a href="https://www.in.gov.br/web/dou/-/portaria-n-98-de-5-de-outubro-de-2026-736573559" target="_blank" rel="noopener">nº 98/2026</a>, <a href="https://www.in.gov.br/web/dou/-/portaria-n-101-de-15-de-outubro-de-2026-738564389" target="_blank" rel="noopener">nº 101/2026</a> e <a href="https://www.in.gov.br/web/dou/-/portaria-n-102-de-19-de-outubro-de-2026-739146123" target="_blank" rel="noopener">nº 102/2026</a>.</p>
+     <p>Retificações analisadas: DOU de <a href="https://www.in.gov.br/web/dou/-/retificacao-736569856" target="_blank" rel="noopener">06/10/2026</a> e de <a href="https://www.in.gov.br/web/dou/-/retificacoes-739938842" target="_blank" rel="noopener">23/10/2026</a>. Portarias de referência: <a href="https://www.in.gov.br/web/dou/-/portaria-n-98-de-5-de-outubro-de-2026-736573559" target="_blank" rel="noopener">nº 98/2026</a>, <a href="https://www.in.gov.br/web/dou/-/portaria-n-101-de-15-de-outubro-de-2026-738564389" target="_blank" rel="noopener">nº 101/2026</a> e <a href="https://www.in.gov.br/web/dou/-/portaria-n-102-de-19-de-outubro-de-2026-739146123" target="_blank" rel="noopener">nº 102/2026</a>.</p>
+         <br />
+        <p class="contato">
+           Guia orientativo desenvolvido por Tacio Machado (CGLic/IPHAN)<br />
+           Para envio de dúvidas, sugestões, elogios e reclamações, encaminhar para <a href="mailto:licenciamento.dados@iphan.gov.br">licenciamento.dados@iphan.gov.br</a>
+         </p>
   </div>
 </footer>
 
 <script>
+/* ===== Campos de data: máscara dd/mm/aaaa + calendário ===== */
+(function(){
+  const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const SEM = ['D','S','T','Q','Q','S','S'];
+  const pad = n => String(n).padStart(2, '0');
+  // "hoje" é sempre lido do relógio de quem consulta, no momento em que o calendário abre
+  const hojeAgora = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+  const fmt = d => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  function ler(v){
+    const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(v || '').trim());
+    if (!m) return null;
+    const d = new Date(+m[3], +m[2] - 1, +m[1]);
+    return d.getDate() === +m[1] && d.getMonth() === +m[2] - 1 ? d : null;
+  }
+  // 03042026 -> 03/04/2026 ; 030426 -> 03/04/2026 ; 3/4/26 -> 03/04/2026
+  function normalizar(v){
+    const t = String(v || '').trim();
+    let m = /^(\d{2})(\d{2})(\d{4})$/.exec(t);
+    if (m) return `${m[1]}/${m[2]}/${m[3]}`;
+    m = /^(\d{2})(\d{2})(\d{2})$/.exec(t);
+    if (m) return `${m[1]}/${m[2]}/20${m[3]}`;
+    m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2}|\d{4})$/.exec(t);
+    if (m) return `${pad(m[1])}/${pad(m[2])}/${m[3].length === 2 ? '20' + m[3] : m[3]}`;
+    return t;
+  }
+  function mascarar(el, e){
+    if (e && e.inputType && e.inputType.startsWith('delete')) return;
+    const v = el.value;
+    if (el.selectionStart !== v.length) return;           // edição no meio: não mexe
+    if (!/^[\d\/]*$/.test(v)) return;
+    if (![...v].every((c, i) => c !== '/' || i === 2 || i === 5)) return; // formato próprio (3/4/2026): normaliza ao sair
+    const d = v.replace(/\D/g, '').slice(0, 8);
+    let out = d;
+    if (d.length > 4) out = `${d.slice(0,2)}/${d.slice(2,4)}/${d.slice(4)}`;
+    else if (d.length > 2) out = `${d.slice(0,2)}/${d.slice(2)}`;
+    if (out !== v){ el.value = out; disparar(el); }
+  }
+  const disparar = el => el.dispatchEvent(new Event('input', { bubbles: true }));
+
+  let pop = null, alvo = null, botao = null, vista = null, foco = null;
+  const ICONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>';
+
+  function montar(){
+    pop = document.createElement('div');
+    pop.className = 'dcal'; pop.hidden = true;
+    pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', 'Escolher data');
+    document.body.appendChild(pop);
+    pop.addEventListener('keydown', teclas);
+    document.addEventListener('mousedown', e => { if (!pop.hidden && !pop.contains(e.target) && e.target !== botao && !botao.contains(e.target)) fechar(false); });
+    window.addEventListener('resize', posicionar);
+    window.addEventListener('scroll', posicionar, true);
+  }
+  function posicionar(){
+    if (!pop || pop.hidden || !alvo) return;
+    const r = alvo.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
+    let left = Math.min(r.left, window.innerWidth - w - 12); left = Math.max(12, left);
+    let top = r.bottom + 6;
+    if (top + h > window.innerHeight - 8 && r.top - h - 6 > 8) top = r.top - h - 6;
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  }
+  function desenhar(){
+    const ano = vista.getFullYear(), mes = vista.getMonth();
+    const sel = ler(alvo.value), hoje = hojeAgora();
+    const ini = new Date(ano, mes, 1 - new Date(ano, mes, 1).getDay());
+    const anoAtual = hoje.getFullYear();
+    const anos = []; for (let a = anoAtual; a >= 1988; a--) anos.push(a);   // do ano corrente para trás: sem anos futuros
+    if (!anos.includes(ano)) anos.push(ano);
+    const noMesAtual = ano === anoAtual && mes === hoje.getMonth();
+    let h = `<div class="dcal-hd">
+      <button type="button" data-nav="-1" aria-label="Mês anterior">‹</button>
+      <select data-sel="mes" aria-label="Mês">${MESES.map((m,i) => `<option value="${i}"${i===mes?' selected':''}${ano===anoAtual && i>hoje.getMonth()?' disabled':''}>${m}</option>`).join('')}</select>
+      <select data-sel="ano" aria-label="Ano">${anos.map(a => `<option${a===ano?' selected':''}>${a}</option>`).join('')}</select>
+      <button type="button" data-nav="1" aria-label="Próximo mês"${noMesAtual?' disabled':''}>›</button></div>
+      <div class="dcal-grid" role="grid">${SEM.map(s => `<span class="wd" aria-hidden="true">${s}</span>`).join('')}`;
+    for (let i = 0; i < 42; i++){
+      const d = new Date(ini.getFullYear(), ini.getMonth(), ini.getDate() + i);
+      const fut = d > hoje;
+      const cls = [d.getMonth() !== mes ? 'out' : '', +d === +hoje ? 'today' : '', fut ? 'fut' : ''].filter(Boolean).join(' ');
+      const s = sel && +d === +sel;
+      h += `<button type="button" data-d="${fmt(d)}" class="${cls}" aria-selected="${!!s}"${fut ? ' disabled aria-disabled="true"' : ''} tabindex="${foco && +d === +foco ? 0 : -1}" aria-label="${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}${+d === +hoje ? ' (hoje)' : ''}">${d.getDate()}</button>`;
+    }
+    h += `</div><div class="dcal-ft"><button type="button" data-hoje>Hoje (${fmt(hoje)})</button><span class="dcal-ft-r"><button type="button" data-limpar>Limpar</button><button type="button" data-fechar>Fechar</button></span></div>`;
+    pop.innerHTML = h;
+    pop.querySelectorAll('[data-nav]').forEach(b => b.onclick = () => mudarMes(+b.dataset.nav));
+    pop.querySelector('[data-sel="mes"]').onchange = e => { vista = limitar(new Date(vista.getFullYear(), +e.target.value, 1)); ajustarFoco(); desenhar(); };
+    pop.querySelector('[data-sel="ano"]').onchange = e => { vista = limitar(new Date(+e.target.value, vista.getMonth(), 1)); ajustarFoco(); desenhar(); };
+    pop.querySelectorAll('[data-d]').forEach(b => b.onclick = () => escolher(b.dataset.d));
+    pop.querySelector('[data-hoje]').onclick = () => escolher(fmt(hojeAgora()));
+    pop.querySelector('[data-limpar]').onclick = () => escolher('');
+    pop.querySelector('[data-fechar]').onclick = () => fechar(true);
+  }
+  // não deixa a vista passar do mês corrente nem o foco passar de hoje
+  function limitar(v){ const h = hojeAgora(); return v > new Date(h.getFullYear(), h.getMonth(), 1) ? new Date(h.getFullYear(), h.getMonth(), 1) : v; }
+  function ajustarFoco(){
+    const ult = new Date(vista.getFullYear(), vista.getMonth() + 1, 0).getDate();
+    foco = new Date(vista.getFullYear(), vista.getMonth(), Math.min(foco ? foco.getDate() : 1, ult));
+    const h = hojeAgora(); if (foco > h) foco = h;
+  }
+  function mudarMes(n){ vista = limitar(new Date(vista.getFullYear(), vista.getMonth() + n, 1)); ajustarFoco(); desenhar(); }
+  function focarDia(){ const b = pop.querySelector(`[data-d="${fmt(foco)}"]`); if (b) b.focus(); }
+  function teclas(e){
+    if (e.key === 'Escape'){ e.preventDefault(); fechar(true); return; }
+    const naGrade = e.target.matches && e.target.matches('[data-d]');
+    if (!naGrade) return;
+    const passo = { ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7 }[e.key];
+    if (passo || e.key === 'PageUp' || e.key === 'PageDown'){
+      e.preventDefault();
+      if (passo) foco = new Date(foco.getFullYear(), foco.getMonth(), foco.getDate() + passo);
+      if (foco > hojeAgora()) foco = hojeAgora();
+      else { const ult = n => new Date(foco.getFullYear(), foco.getMonth() + n + 1, 0).getDate(); const n = e.key === 'PageUp' ? -1 : 1; foco = new Date(foco.getFullYear(), foco.getMonth() + n, Math.min(foco.getDate(), ult(n))); }
+      if (foco.getMonth() !== vista.getMonth() || foco.getFullYear() !== vista.getFullYear()){ vista = new Date(foco.getFullYear(), foco.getMonth(), 1); desenhar(); }
+      else pop.querySelectorAll('[data-d]').forEach(b => b.tabIndex = b.dataset.d === fmt(foco) ? 0 : -1);
+      focarDia();
+    }
+  }
+  function escolher(v){ alvo.value = v; disparar(alvo); fechar(true); }
+  window.dataFutura = v => { const d = ler(v); return !!d && d > hojeAgora(); };
+  function abrir(input, btn, refId){
+    if (!pop) montar();
+    if (!pop.hidden && alvo === input){ fechar(true); return; }
+    alvo = input; botao = btn;
+    const ref = refId && document.getElementById(refId);
+    const hoje = hojeAgora();
+    let base = ler(normalizar(input.value)) || (ref && ler(ref.value)) || hoje;
+    if (base > hoje) base = hoje;
+    foco = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+    vista = new Date(base.getFullYear(), base.getMonth(), 1);
+    document.querySelectorAll('.dcal-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    btn.setAttribute('aria-expanded', 'true');
+    pop.hidden = false; desenhar(); posicionar(); focarDia();
+  }
+  function fechar(devolver){
+    if (!pop || pop.hidden) return;
+    pop.hidden = true;
+    if (botao) botao.setAttribute('aria-expanded', 'false');
+    if (devolver && alvo) alvo.focus();
+  }
+
+  /* ---- Processo SEI: exatamente 17 algarismos, máscara 00000.000000/0000-00 ---- */
+  const formatarProc = d => {
+    d = d.slice(0, 17);
+    let o = d.slice(0, 5);
+    if (d.length > 5) o += '.' + d.slice(5, 11);
+    if (d.length > 11) o += '/' + d.slice(11, 15);
+    if (d.length > 15) o += '-' + d.slice(15);
+    return o;
+  };
+  // posição no texto formatado logo depois do n-ésimo algarismo
+  const posDepois = (txt, n) => { if (n <= 0) return 0; let c = 0; for (let i = 0; i < txt.length; i++){ if (/\d/.test(txt[i]) && ++c === n) return i + 1; } return txt.length; };
+  window.processoInstalar = function(ids){
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || el.dataset.proc) return;
+      el.dataset.proc = '1';
+      el.setAttribute('inputmode', 'numeric'); el.setAttribute('maxlength', '20');
+      let antes = el.value;
+      el.addEventListener('beforeinput', () => { antes = el.value; });
+      el.addEventListener('input', e => {
+        const v = el.value, cur = el.selectionStart ?? v.length;
+        let dig = v.replace(/\D/g, '');
+        let nAntesCursor = v.slice(0, cur).replace(/\D/g, '').length;
+        // apagou só um separador (. / -): apaga também o algarismo anterior
+        if (e.inputType === 'deleteContentBackward' && dig === antes.replace(/\D/g, '') && nAntesCursor > 0){
+          dig = dig.slice(0, nAntesCursor - 1) + dig.slice(nAntesCursor); nAntesCursor--;
+        }
+        if (dig.length > 17){ dig = dig.slice(0, 17); nAntesCursor = Math.min(nAntesCursor, 17); }
+        const novo = formatarProc(dig);
+        if (novo !== v){
+          el.value = novo;
+          const p = posDepois(novo, nAntesCursor);
+          try { el.setSelectionRange(p, p); } catch(_){}
+          disparar(el);
+        }
+      });
+      el.addEventListener('blur', () => { const n = formatarProc(el.value.replace(/\D/g, '')); if (n !== el.value){ el.value = n; disparar(el); } });
+    });
+  };
+  /* ---- Campos só numéricos (portaria, item, página): descarta letras e símbolos ---- */
+  window.numerosInstalar = function(map){
+    Object.entries(map).forEach(([id, cfg]) => {
+      const max = Array.isArray(cfg) ? cfg[0] : cfg, semZero = Array.isArray(cfg) && cfg[1] === 'semzero';
+      const el = document.getElementById(id);
+      if (!el || el.dataset.num) return;
+      if (semZero) el.addEventListener('blur', () => { const n = el.value.replace(/^0+(?=\d)/, ''); if (n !== el.value){ el.value = n; disparar(el); } });
+      el.dataset.num = '1';
+      el.setAttribute('inputmode', 'numeric'); el.setAttribute('maxlength', String(max));
+      el.setAttribute('pattern', '[0-9]*');
+      el.addEventListener('input', () => {
+        const v = el.value, cur = el.selectionStart ?? v.length;
+        const novo = v.replace(/\D/g, '').slice(0, max);
+        if (novo !== v){
+          const p = Math.min(v.slice(0, cur).replace(/\D/g, '').length, novo.length);
+          el.value = novo;
+          try { el.setSelectionRange(p, p); } catch(_){}
+          disparar(el);   // avisa a página do valor já limpo
+        }
+      });
+    });
+  };
+  window.semZeroEsq = v => String(v || '').trim().replace(/^0+(?=\d)/, '');
+  window.processoFalta = v => 17 - String(v || '').replace(/\D/g, '').length;
+
+  // map: { 'f-dass': null, 'f-data': 'f-dass', ... } -> id do campo : id do campo de referência para abrir o calendário
+  window.datasInstalar = function(map){
+    Object.entries(map).forEach(([id, refId]) => {
+      const el = document.getElementById(id);
+      if (!el || el.dataset.dcal) return;
+      el.dataset.dcal = '1';
+      el.setAttribute('inputmode', 'numeric'); el.setAttribute('maxlength', '10');
+      const w = document.createElement('span'); w.className = 'dwrap';
+      el.parentNode.insertBefore(w, el); w.appendChild(el);
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'dcal-btn'; b.innerHTML = ICONE;
+      b.setAttribute('aria-label', 'Abrir calendário'); b.setAttribute('aria-haspopup', 'dialog'); b.setAttribute('aria-expanded', 'false');
+      w.appendChild(b);
+      b.addEventListener('click', () => abrir(el, b, refId));
+      el.addEventListener('input', e => mascarar(el, e));
+      el.addEventListener('blur', () => { const v = normalizar(el.value); if (v !== el.value){ el.value = v; disparar(el); } });
+      el.addEventListener('keydown', e => { if (e.altKey && e.key === 'ArrowDown'){ e.preventDefault(); abrir(el, b, refId); } });
+    });
+  };
+})();
+
+
+/* ---- Alternar modo claro/escuro (padrão: escuro) ---- */
+(function(){
+  const root = document.documentElement, b = document.getElementById('modo');
+  const SOL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  const LUA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+  function aplicar(m){
+    if (m === 'claro') root.setAttribute('data-modo', 'claro'); else root.removeAttribute('data-modo');
+    const claro = m === 'claro';
+    b.innerHTML = claro ? LUA + 'Modo escuro' : SOL + 'Modo claro';
+    b.setAttribute('aria-label', claro ? 'Mudar para o modo escuro' : 'Mudar para o modo claro');
+    b.setAttribute('aria-pressed', String(claro));
+  }
+  aplicar(root.getAttribute('data-modo') === 'claro' ? 'claro' : 'escuro');
+  b.addEventListener('click', () => {
+    const novo = root.getAttribute('data-modo') === 'claro' ? 'escuro' : 'claro';
+    aplicar(novo);
+    try { localStorage.setItem('modo-retificacao', novo); } catch(e){}
+  });
+})();
 /* ===== Pop-up "Onde encontrar" — ilustrações do DOU com dados fictícios ===== */
 (function(){
   const H = (k, html, tag, cls) => `<${tag||'span'}${cls?` class="${cls}"`:''} data-hl="${k}">${html}</${tag||'span'}>`;
@@ -433,7 +712,7 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
         <div class="meta">${H('data','Publicado em: 03/03/2026')} | Edição: 42 | ${H('secao','Seção: 1')} | ${H('pag','Página: 41')}</div></div>
       <div class="dou-pg">
         <div class="dou-org">${ORG}</div>
-        <div class="dou-tit">PORTARIA Nº ${H('port','123')}, DE 2 DE MARÇO DE ${H('ano','2026')}</div>
+        <div class="dou-tit">PORTARIA Nº ${H('port','123')}, DE ${H('dass','2 DE MARÇO DE 2026')}</div>
         <p class="dou-dim">O DIRETOR DO CENTRO NACIONAL DE ARQUEOLOGIA […] resolve:</p>
         <p>I - Expedir ${H('tipo1','RENOVAÇÃO')}, sem prejuízo das demais autorizações exigíveis […], aos arqueólogos coordenadores dos projetos de pesquisa arqueológica relacionados no Anexo I desta Portaria […];</p>
         ${H('tipo', 'II - Expedir <b>AUTORIZAÇÃO</b>, sem prejuízo das demais autorizações exigíveis […], aos arqueólogos coordenadores dos projetos e programas de pesquisas arqueológicas relacionadas no anexo II desta Portaria […];', 'p')}
@@ -463,7 +742,7 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
       <div class="dou-pg">
         <div class="dou-org">${ORG}</div>
         <div class="dou-tit">RETIFICAÇÃO</div>
-        <p>Na Portaria nº 123/2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89, publicada no DOU em 03/03/2026, Seção 1, Página 41, onde se lê: "Arqueóloga Coordenadora de Campo: Helena Duarte Vasconcelos", leia-se: "${H('rleia','Arqueólogo Coordenador de Campo: Rodrigo Albuquerque Lins')}".</p>
+        <p>Na Portaria nº 123, de 2 de março de 2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89, publicada no DOU em 03/03/2026, Seção 1, Página 41, onde se lê: "Arqueóloga Coordenadora de Campo: Helena Duarte Vasconcelos", leia-se: "${H('rleia','Arqueólogo Coordenador de Campo: Rodrigo Albuquerque Lins')}".</p>
         <div class="dou-foot">Este conteúdo não substitui o publicado na versão certificada.</div>
       </div>`,
     busca: () => `
@@ -472,14 +751,14 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
         <div class="box"><b>Pesquisar:</b> "01234.000567/2026-89"</div>
         <div class="n">2 resultados</div>
         <div class="res"><span class="h">PORTARIA Nº 123, DE 2 DE MARÇO DE 2026</span><span class="m">Publicado em 03/03/2026 · Seção 1 · Página 41</span><span class="s">[…] 07- Enquadramento IN: Nível III […] Processo nº 01234.000567/2026-89 […]</span></div>
-        ${H('bret', '<span class="h">RETIFICAÇÃO</span><span class="m">Publicado em 14/04/2026 · Seção 1 · Página 18</span><span class="s">Na Portaria nº 123/2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89 […]</span>', 'div','res')}
+        ${H('bret', '<span class="h">RETIFICAÇÃO</span><span class="m">Publicado em 14/04/2026 · Seção 1 · Página 18</span><span class="s">Na Portaria nº 123, de 2 de março de 2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89 […]</span>', 'div','res')}
       </div>`
   };
 
   const T = {
     port: { t:'Número da portaria', doc:'portaria', hl:'port', pin:'número', steps:['Abra a portaria original no DOU.','No título do ato, copie só o número que vem depois de “PORTARIA Nº”.'], copy:'123' },
-    ano: { t:'Ano da portaria', doc:'portaria', hl:'ano', pin:'ano', steps:['No título da portaria, o ano é o último elemento da data de assinatura.'], copy:'2026', warn:'Portaria assinada no fim de dezembro pode sair no DOU já no ano seguinte. O ano que vai na retificação é o do <b>título</b>.' },
-    data: { t:'Data de publicação no DOU', doc:'portaria', hl:'data', pin:'data de publicação', below:true, steps:['Na página da portaria, logo abaixo de “DIÁRIO OFICIAL DA UNIÃO”, leia a linha “Publicado em”.','Copie a data no formato dd/mm/aaaa.'], copy:'03/03/2026', warn:'<b>Não use a data do título</b> (2 de março): ela é a data de assinatura, não a de publicação.' },
+    dass: { t:'Data da portaria (assinatura)', doc:'portaria', hl:'dass', pin:'data de assinatura', steps:['No título do ato, a data vem logo depois do número: “DE 2 DE MARÇO DE 2026”.','Informe essa data. Na retificação, ela sai por extenso e em minúsculas: “de 2 de março de 2026” (no dia 1º, com o ordinal: “de 1º de março”).'], copy:'02/03/2026 → “de 2 de março de 2026”', warn:'Não confunda com a data de <b>publicação</b> (“Publicado em”), que é outra e vai depois de “publicada no DOU em”.' },
+    data: { t:'Data de publicação no DOU', doc:'portaria', hl:'data', pin:'data de publicação', below:true, steps:['Na página da portaria, logo abaixo de “DIÁRIO OFICIAL DA UNIÃO”, leia a linha “Publicado em”.','Copie a data no formato dd/mm/aaaa.'], copy:'03/03/2026', warn:'A data do título (2 de março) é a de <b>assinatura</b>: ela vai logo depois do número da portaria. Aqui entra a data de <b>publicação</b>.' },
     pag: { t:'Página da publicação', doc:'portaria', hl:'pag', pin:'página', below:true, steps:['Na mesma linha de “Publicado em”, copie o número depois de “Página”.'], copy:'41', warn:'Se a portaria ocupa várias páginas, vale a página em que ela <b>começa</b>, que é a desta linha.' },
     anexo: { t:'Anexo', doc:'portaria', hl:'anexo', pin:'anexo do item', steps:['Encontre o item no corpo da portaria (pelo número do processo, por exemplo).','Suba até o título “ANEXO” mais próximo acima dele.','Copie o número em algarismo romano.'], copy:'II' },
     tipo: { t:'Tipo do item: Autorização, Renovação ou Permissão', doc:'portaria', hl:'tipo', pin:'inciso que cita o anexo II', steps:['No “resolve”, procure o inciso que menciona o anexo do item.','A palavra em maiúsculas depois de “Expedir” é o tipo.'], copy:'Autorização', warn:'Cada anexo pode ter um tipo diferente. Nesta portaria, o Anexo I é de <b>Renovação</b> e o Anexo II, de <b>Autorização</b>.' },
@@ -493,7 +772,7 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
     pdata: { t:'Data da última retificação', doc:'retificacao', hl:'rdata', pin:'data de publicação', below:true, steps:['Abra a última retificação publicada desta autorização.','Copie a data da linha “Publicado em”.','Atalho: no <a href="https://consulta-portarias.vercel.app/" target="_blank" rel="noopener">sistema de consulta de portarias</a>, a coluna “Link de Retificações no DOU” lista as retificações numeradas; abra a de número mais alto.'], copy:'14/04/2026' },
     ppag: { t:'Página da última retificação', doc:'retificacao', hl:'rpag', pin:'página', below:true, steps:['Na mesma linha, copie o número depois de “Página”.'], copy:'18' }
   };
-  T.nx = T.n;
+  T.nx = T.n; T.ano = T.dass;
 
   let ov, lastTrigger, cur, curAlt = false;
   function build(){
@@ -581,7 +860,11 @@ div[data-hl].on,p[data-hl].on{padding:2px 4px;margin:0 -4px}
 })();
 
 // ===== Verificador do extrato padrão de retificação (um ou mais campos) =====
-const PREFIXO = /^Na Portaria nº (\d{1,4})\/(\d{4}), Anexo ([IVXL]+), (Autorização|Renovação|Permissão) nº (\d{2,3}), Processo nº (\d{5}\.\d{6}\/(\d{4})-\d{2}), publicada no DOU em (\d{2})\/(\d{2})\/(\d{4}), Seção 1, Página (\d{1,4}),(?: em sua (\d{2})ª retificação, publicada no DOU em (\d{2})\/(\d{2})\/(\d{4}), Seção 1, Página (\d{1,4}), Retificação,)? (?=onde se lê: ")/;
+const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const RE_MES = MESES.join('|');
+const PREFIXO = new RegExp('^Na Portaria nº ([1-9]\\d{0,3}), de (1º|[1-9]|[12]\\d|3[01]) de (' + RE_MES + ') de (\\d{4}), Anexo ([IVXL]+), (Autorização|Renovação|Permissão) nº (\\d{2,3}), Processo nº (\\d{5}\\.\\d{6}\\/(\\d{4})-\\d{2}), publicada no DOU em (\\d{2})\\/(\\d{2})\\/(\\d{4}), Seção 1, Página (\\d{1,4}),(?: em sua (\\d{2})ª retificação, publicada no DOU em (\\d{2})\\/(\\d{2})\\/(\\d{4}), Seção 1, Página (\\d{1,4}), Retificação,)? (?=onde se lê: ")');
+const RE_PORT = new RegExp('^Na Portaria nº [1-9]\\d{0,3}, de (1º|[1-9]|[12]\\d|3[01]) de (' + RE_MES + ') de (\\d{4}),');
+const RE_PORT_TOL = /^Na Portaria\s+n[º°o.]*\s*\d{1,4},?\s+de\s+(1º|\d{1,2})º?\s+de\s+([A-Za-zçÇ]+)\s+de\s+(\d{4})/i;
 const PAR = /onde se lê: "(.+?)", leia-se: "(.+?)"(?=; e onde se lê: "|\.$)/g;
 
 const ROTULO = /^(Enquadramento(?: IN)?|Empreendedor|Empreendimento|Projeto(?: Acadêmico)?|Arqueólog(?:o|a|os|as) Coordenador(?:a|es|as)?(?: Ger(?:al|ais))?(?: de Campo)?|Apoio Institucional|Endosso Institucional|Instituição de Guarda(?: e Pesquisa)?|Área de Abrangência|Prazo de Validade): \S/;
@@ -625,12 +908,23 @@ function analisar(entrada) {
   const cabeca = t.split(/onde se l[êe]/i)[0] || '';
 
   // Portaria
-  if (/^Na Portaria nº \d{1,4}\/\d{4},/.test(t)) add('ok', 'Portaria', 'Começa com "Na Portaria nº N/AAAA".');
-  else {
-    let dica = 'Comece com "Na Portaria nº 123/2026," (número/ano).';
-    if (/Portaria\s+(N[º°]|n°)/.test(t)) dica = 'Use "nº" (o sobrescrito, minúsculo), não "Nº" nem "n°". ' + dica;
-    if (/^Na Portaria\s+n[º°]?\s*\d+,? de \d/i.test(t)) dica = 'Tire a data de assinatura por extenso. ' + dica;
-    add('erro', 'Portaria', dica);
+  let dataAss = null;
+  const mPort = RE_PORT.exec(t);
+  if (mPort) {
+    const dia = mPort[1] === '1º' ? 1 : +mPort[1], mes = MESES.indexOf(mPort[2]) + 1;
+    if (dataValida(dia, mes, mPort[3])) { dataAss = new Date(+mPort[3], mes - 1, dia); add('ok', 'Portaria', 'Número e data de assinatura por extenso: "Na Portaria nº N, de d de mês de aaaa,".'); }
+    else add('erro', 'Portaria', `A data "${mPort[1]} de ${mPort[2]} de ${mPort[3]}" não existe.`);
+  } else {
+    const dicas = [];
+    if (/^Na Portaria\s+n[º°o.]*\s*\d{1,4}\/\d{4}/i.test(t)) dicas.push('Troque "N/AAAA" pela data de assinatura por extenso, como no título do ato.');
+    if (/^Na Portaria\s+(N[º°]|n°)/.test(t)) dicas.push('Use "nº" (o sobrescrito, minúsculo), não "Nº" nem "n°".');
+    if (/^Na Portaria\s+n[º°]?\s*\d{1,4}\s+de\s/i.test(t)) dicas.push('Ponha vírgula depois do número: "nº 92, de 24 de setembro de 2026,".');
+    if (/^Na Portaria\s+n[º°o.]*\s*0\d/i.test(t)) dicas.push('Número da portaria sem zero à esquerda: "nº 7", não "nº 07".');
+    if (/^Na Portaria[^,]{0,20},?\s+de\s+0\d\s+de/i.test(t)) dicas.push('Dia sem zero à esquerda: "de 2 de março".');
+    if (/^Na Portaria[^,]{0,20},?\s+de\s+1\s+de/i.test(t)) dicas.push('Primeiro dia do mês com ordinal: "de 1º de março".');
+    if (/^Na Portaria[^,]{0,20},?\s+de\s+\d{1,2}º?\s+de\s+[A-ZÇ]/.test(t)) dicas.push('Mês em minúsculas.');
+    dicas.push('Comece com "Na Portaria nº 123, de 2 de março de 2026,".');
+    add('erro', 'Portaria', dicas.join(' '));
   }
   // Anexo
   if (/, Anexo [IVXL]+,/.test(cabeca)) add('ok', 'Anexo', 'Anexo em algarismo romano.');
@@ -721,12 +1015,21 @@ function analisar(entrada) {
   }
 
   // Coerência
-  const mP = /^Na Portaria n[º°] ?\d{1,4}\/(\d{4})/i.exec(t);
-  const mP2 = /^Na Portaria n[º°]?\s*\d{1,4},? de \d{1,2}º? de [a-zç]+ de (\d{4})/i.exec(t);
-  const anoPort = mP ? +mP[1] : (mP2 ? +mP2[1] : null);
+  const mT = RE_PORT_TOL.exec(t), mOld = /^Na Portaria\s+n[º°o.]*\s*\d{1,4}\/(\d{4})/i.exec(t);
+  const anoPort = mT ? +mT[3] : (mOld ? +mOld[1] : null);
   const mProc = /\d{5}\.\d{6}\/(\d{4})-\d{2}/.exec(cabeca);
   if (anoPort && mProc && +mProc[1] > anoPort) add('erro', 'Coerência', `O processo é de ${mProc[1]}, mas a portaria é de ${anoPort}. Confira o ano da portaria.`);
   if (anoPort && mPub && +mPub[3] !== anoPort && +mPub[3] !== anoPort + 1) add('erro', 'Coerência', `Portaria de ${anoPort} publicada em ${mPub[3]}? Confira o ano.`);
+  const hoje0 = new Date(); hoje0.setHours(0,0,0,0);
+  const futura = (d, m, y) => new Date(+y, +m - 1, +d) > hoje0;
+  if (dataAss && dataAss > hoje0) add('erro', 'Coerência', 'A data da portaria é posterior a hoje.');
+  if (mPub && futura(mPub[1], mPub[2], mPub[3])) add('erro', 'Coerência', `A data de publicação ${mPub[1]}/${mPub[2]}/${mPub[3]} é posterior a hoje.`);
+  if (mRet && futura(mRet[2], mRet[3], mRet[4])) add('erro', 'Coerência', 'A data da retificação anterior é posterior a hoje.');
+  if (dataAss && mPub) {
+    const dp = new Date(+mPub[3], +mPub[2] - 1, +mPub[1]), dias = Math.round((dp - dataAss) / 864e5);
+    if (dias < 0) add('erro', 'Coerência', 'A publicação no DOU não pode ser anterior à data de assinatura da portaria.');
+    else if (dias > 60) add('aviso', 'Coerência', `A portaria foi publicada ${dias} dias depois da assinatura. Confira as duas datas.`);
+  }
   if (mPub && mRet) {
     const d1 = new Date(+mPub[3], +mPub[2] - 1, +mPub[1]), d2 = new Date(+mRet[4], +mRet[3] - 1, +mRet[2]);
     if (!(d2 > d1)) add('erro', 'Coerência', 'A retificação anterior precisa ser posterior à publicação original.');
@@ -735,9 +1038,9 @@ function analisar(entrada) {
   const m = PREFIXO.exec(t);
   const temErro = r.some(c => c.nivel === 'erro');
   const campos = (m && caudaOk) ? {
-    portaria: `${m[1]}/${m[2]}`, anexo: m[3], tipo: m[4], item: m[5], processo: m[6],
-    publicacao: `${m[8]}/${m[9]}/${m[10]}, Seção 1, Página ${m[11]}`,
-    retificacaoAnterior: m[12] ? `${m[12]}ª — DOU ${m[13]}/${m[14]}/${m[15]}, Seção 1, Página ${m[16]}` : 'nenhuma (1ª retificação)',
+    portaria: `nº ${m[1]}, de ${m[2]} de ${m[3]} de ${m[4]}`, anexo: m[5], tipo: m[6], item: m[7], processo: m[8],
+    publicacao: `${m[10]}/${m[11]}/${m[12]}, Seção 1, Página ${m[13]}`,
+    retificacaoAnterior: m[14] ? `${m[14]}ª — DOU ${m[15]}/${m[16]}/${m[17]}, Seção 1, Página ${m[18]}` : 'nenhuma (1ª retificação)',
     pares: pares.map(p => ({ ...p }))
   } : null;
   return { texto: t, checks: r, campos, padrao: !!campos && !temErro };
@@ -759,7 +1062,7 @@ function analisarLote(entrada) {
   return blocos.map(b => analisar(b.join(' ')));
 }
 
-if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, normaliza, nucleoRotulo, rotuloDe, ROTULO, dataValida };
+if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, normaliza, nucleoRotulo, rotuloDe, ROTULO, dataValida, MESES };
 
 
 (function(){
@@ -767,8 +1070,14 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const seg = (cls, txt) => `<span class="seg ${cls}">${esc(txt)}</span>`;
 
+  const MES_EXT = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  function extenso(d){
+    const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(d||'').trim());
+    if (!m || !dataValida(m[1],m[2],m[3])) return '[data da portaria]';
+    return `${+m[1] === 1 ? '1º' : +m[1]} de ${MES_EXT[+m[2]-1]} de ${m[3]}`;
+  }
   function frase(o){
-    const id = `Na Portaria nº ${o.port}/${o.ano}, Anexo ${o.anexo}, ${o.tipo} nº ${o.item}, Processo nº ${o.proc}, publicada no DOU em ${o.data}, Seção 1, Página ${o.pag},`;
+    const id = `Na Portaria nº ${semZeroEsq(o.port)}, de ${extenso(o.dass)}, Anexo ${o.anexo}, ${o.tipo} nº ${o.item}, Processo nº ${o.proc}, publicada no DOU em ${o.data}, Seção 1, Página ${o.pag},`;
     const prev = o.n > 1 ? ` em sua ${String(o.n-1).padStart(2,'0')}ª retificação, publicada no DOU em ${o.pdata}, Seção 1, Página ${o.ppag}, Retificação,` : '';
     const onde = ` onde se lê: "${o.onde}",`;
     const leia = ` leia-se: "${o.leia}".`;
@@ -779,7 +1088,7 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
   /* ---------- 1. Anatomia ---------- */
   function anatomia(n){
     const ph = s => `<span class="ph">${s}</span>`;
-    const id = `Na Portaria nº ${ph('nnn')}/${ph('aaaa')}, Anexo ${ph('II')}, ${ph('Autorização')} nº ${ph('07')}, Processo nº ${ph('00000.000000/0000-00')}, publicada no DOU em ${ph('dd/mm/aaaa')}, Seção 1, Página ${ph('nn')},`;
+    const id = `Na Portaria nº ${ph('nnn')}, de ${ph('dd')} de ${ph('mês')} de ${ph('aaaa')}, Anexo ${ph('II')}, ${ph('Autorização')} nº ${ph('07')}, Processo nº ${ph('00000.000000/0000-00')}, publicada no DOU em ${ph('dd/mm/aaaa')}, Seção 1, Página ${ph('nn')},`;
     const prev = `em sua ${ph('01')}ª retificação, publicada no DOU em ${ph('dd/mm/aaaa')}, Seção 1, Página ${ph('nn')}, Retificação,`;
     const html = `<span class="seg s-id">${id}</span> ` + (n > 1 ? `<span class="seg s-prev">${prev}</span> ` : '') +
       `<span class="seg s-old">onde se lê: "${ph('Rótulo')}: ${ph('texto vigente')}",</span> <span class="seg s-new">leia-se: "${ph('Rótulo')}: ${ph('texto novo')}".</span>`;
@@ -791,7 +1100,7 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
   anatomia(2);
 
   /* ---------- 2. Corrente ---------- */
-  const BASE = { port:'123', ano:'2026', anexo:'II', tipo:'Autorização', item:'07', proc:'01234.000567/2026-89', data:'03/03/2026', pag:'41' };
+  const BASE = { port:'123', dass:'02/03/2026', anexo:'II', tipo:'Autorização', item:'07', proc:'01234.000567/2026-89', data:'03/03/2026', pag:'41' };
   const L = { hf:'Arqueóloga Coordenadora de Campo', hm:'Arqueólogo Coordenador de Campo', pl:'Arqueólogos Coordenadores de Campo' };
   const V = [
     { lbl:'Original', date:'03/03/2026', pag:'41', line:`${L.hf}: Helena Duarte Vasconcelos` },
@@ -824,7 +1133,7 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
     if (step === 0){
       $('#retTitle').textContent = 'Publicação original';
       $('#retMeta').textContent = 'DOU 03/03/2026 · Seção 1 · p. 41';
-      $('#ret').innerHTML = `A Portaria nº 123/2026 sai no DOU de 03/03/2026, Seção 1, Página 41. No Anexo II (Autorização), o item 07 traz: ${seg('s-old', V[0].line)}. Depois, esta linha precisa ser corrigida três vezes.`;
+      $('#ret').innerHTML = `A Portaria nº 123, de 2 de março de 2026, sai no DOU de 03/03/2026, Seção 1, Página 41. No Anexo II (Autorização), o item 07 traz: ${seg('s-old', V[0].line)}. Depois, esta linha precisa ser corrigida três vezes.`;
       $('#retNote').hidden = true;
     } else {
       const o = { ...BASE, n: step, pdata: V[step-1].date, ppag: V[step-1].pag, onde: V[step-1].line, leia: V[step].line };
@@ -854,28 +1163,28 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
   /* ---------- 4. Casos ---------- */
   const CASOS = [
     { t:'Elementos fora de ordem e formatos trocados',
-      bad:'Na Portaria <mark class="x">N°</mark> 131 <mark class="x">de 16 de março de 2026, de 17/03/2026, seção I</mark>, Anexo III, Autorização <mark class="x">n°</mark> 12, <mark class="x">Página 9</mark>, Processo <mark class="x">n°</mark> 01234.000890/2026-12, onde se lê <mark class="x">"</mark>Arqueólogo Coordenador de Campo: Tiago Moura Reis", leia-se <mark class="x">"</mark>Arqueóloga Coordenadora de Campo: Beatriz Lacerda Fontes".',
-      good:'Na Portaria nº <mark class="ok">131/2026</mark>, Anexo III, Autorização nº 12, Processo nº 01234.000890/2026-12, <mark class="ok">publicada no DOU em 17/03/2026, Seção 1, Página 9</mark>, onde se lê<mark class="ok">:</mark> "Arqueólogo Coordenador de Campo: Tiago Moura Reis", leia-se<mark class="ok">:</mark> "Arqueóloga Coordenadora de Campo: Beatriz Lacerda Fontes".',
-      why:['“N°”/“n°” usam o símbolo de grau; o correto é “nº”.','A página aparece antes do processo e a data vem sem “publicada no DOU em”.','“seção I” em romano; o DOU usa “Seção 1”.'] },
+      bad:'Na Portaria <mark class="x">N°</mark> 131<mark class="x">&nbsp;</mark>de 16 de março de 2026, <mark class="x">de 17/03/2026, seção I</mark>, Anexo III, Autorização <mark class="x">n°</mark> 12, <mark class="x">Página 9</mark>, Processo <mark class="x">n°</mark> 01234.000890/2026-12, onde se lê <mark class="x">"</mark>Arqueólogo Coordenador de Campo: Tiago Moura Reis", leia-se <mark class="x">"</mark>Arqueóloga Coordenadora de Campo: Beatriz Lacerda Fontes".',
+      good:'Na Portaria nº 131<mark class="ok">,</mark> de 16 de março de 2026, Anexo III, Autorização nº 12, Processo nº 01234.000890/2026-12, <mark class="ok">publicada no DOU em 17/03/2026, Seção 1, Página 9</mark>, onde se lê<mark class="ok">:</mark> "Arqueólogo Coordenador de Campo: Tiago Moura Reis", leia-se<mark class="ok">:</mark> "Arqueóloga Coordenadora de Campo: Beatriz Lacerda Fontes".',
+      why:['“N°”/“n°” usam o símbolo de grau; o correto é “nº”. Depois do número vem vírgula.','A página aparece antes do processo e a data vem sem “publicada no DOU em”.','“seção I” em romano; o DOU usa “Seção 1”.'] },
     { t:'Leia-se sem rótulo',
-      bad:'Na Portaria nº 140/2026, Anexo I, Autorização nº 03, Processo nº 01234.001122/2025-34, publicada no DOU em 07/04/2026, Seção 1, Página 12, onde se lê: "Apoio Institucional: Núcleo de Pesquisas Arqueológicas de Arandiba", leia-se: "<mark class="x">Museu Municipal de Itaperó</mark>".',
-      good:'Na Portaria nº 140/2026, Anexo I, Autorização nº 03, Processo nº 01234.001122/2025-34, publicada no DOU em 07/04/2026, Seção 1, Página 12, onde se lê: "Apoio Institucional: Núcleo de Pesquisas Arqueológicas de Arandiba", leia-se: "<mark class="ok">Apoio Institucional:</mark> Museu Municipal de Itaperó".',
+      bad:'Na Portaria nº 140, de 6 de abril de 2026, Anexo I, Autorização nº 03, Processo nº 01234.001122/2025-34, publicada no DOU em 07/04/2026, Seção 1, Página 12, onde se lê: "Apoio Institucional: Núcleo de Pesquisas Arqueológicas de Arandiba", leia-se: "<mark class="x">Museu Municipal de Itaperó</mark>".',
+      good:'Na Portaria nº 140, de 6 de abril de 2026, Anexo I, Autorização nº 03, Processo nº 01234.001122/2025-34, publicada no DOU em 07/04/2026, Seção 1, Página 12, onde se lê: "Apoio Institucional: Núcleo de Pesquisas Arqueológicas de Arandiba", leia-se: "<mark class="ok">Apoio Institucional:</mark> Museu Municipal de Itaperó".',
       why:['Sem rótulo, o leia-se não diz qual campo passa a valer.'] },
     { t:'Tipo do item diferente do anexo',
-      bad:'Na Portaria nº 152/2026, Anexo I, <mark class="x">Autorização</mark> nº 02, Processo nº 01234.003344/2024-56, publicada no DOU em 24/04/2026, Seção 1, Página 13, onde se lê: "Arqueólogo Coordenador de Campo: Caio Rezende Prates", leia-se: "Arqueólogos Coordenadores de Campo: Caio Rezende Prates e Lívia Ostermann Saraiva".',
-      good:'Na Portaria nº 152/2026, Anexo I, <mark class="ok">Renovação</mark> nº 02, Processo nº 01234.003344/2024-56, publicada no DOU em 24/04/2026, Seção 1, Página 13, onde se lê: "Arqueólogo Coordenador de Campo: Caio Rezende Prates", leia-se: "Arqueólogos Coordenadores de Campo: Caio Rezende Prates e Lívia Ostermann Saraiva".',
-      why:['Na Portaria nº 152/2026 (fictícia), o inciso I do resolve diz “Expedir RENOVAÇÃO … relacionados no Anexo I”. O item é uma renovação.'] },
+      bad:'Na Portaria nº 152, de 23 de abril de 2026, Anexo I, <mark class="x">Autorização</mark> nº 02, Processo nº 01234.003344/2024-56, publicada no DOU em 24/04/2026, Seção 1, Página 13, onde se lê: "Arqueólogo Coordenador de Campo: Caio Rezende Prates", leia-se: "Arqueólogos Coordenadores de Campo: Caio Rezende Prates e Lívia Ostermann Saraiva".',
+      good:'Na Portaria nº 152, de 23 de abril de 2026, Anexo I, <mark class="ok">Renovação</mark> nº 02, Processo nº 01234.003344/2024-56, publicada no DOU em 24/04/2026, Seção 1, Página 13, onde se lê: "Arqueólogo Coordenador de Campo: Caio Rezende Prates", leia-se: "Arqueólogos Coordenadores de Campo: Caio Rezende Prates e Lívia Ostermann Saraiva".',
+      why:['Na Portaria nº 152, de 23 de abril de 2026 (fictícia), o inciso I do resolve diz “Expedir RENOVAÇÃO … relacionados no Anexo I”. O item é uma renovação.'] },
     { t:'Rótulo inventado que junta duas funções',
-      bad:'Na Portaria nº 118/2026, Anexo II, Autorização nº 02, Processo nº 01234.004455/2021-67, publicada no DOU em 20/02/2026, Seção 1, Página 89, onde se lê: "Arqueólogas Coordenadoras: Joana Ribas Teixeira e Sofia Amaral Quintão", leia-se: "<mark class="x">Arqueóloga Geral e de Campo</mark>: Sofia Amaral Quintão".',
-      good:'Na Portaria nº 118/2026, Anexo II, Autorização nº 02, Processo nº 01234.004455/2021-67, publicada no DOU em 20/02/2026, Seção 1, Página 89, onde se lê: "Arqueólogas Coordenadoras: Joana Ribas Teixeira e Sofia Amaral Quintão", leia-se: "<mark class="ok">Arqueóloga Coordenadora:</mark> Sofia Amaral Quintão. <mark class="ok">Arqueóloga Coordenadora de Campo:</mark> Sofia Amaral Quintão".',
+      bad:'Na Portaria nº 118, de 19 de fevereiro de 2026, Anexo II, Autorização nº 02, Processo nº 01234.004455/2021-67, publicada no DOU em 20/02/2026, Seção 1, Página 89, onde se lê: "Arqueólogas Coordenadoras: Joana Ribas Teixeira e Sofia Amaral Quintão", leia-se: "<mark class="x">Arqueóloga Geral e de Campo</mark>: Sofia Amaral Quintão".',
+      good:'Na Portaria nº 118, de 19 de fevereiro de 2026, Anexo II, Autorização nº 02, Processo nº 01234.004455/2021-67, publicada no DOU em 20/02/2026, Seção 1, Página 89, onde se lê: "Arqueólogas Coordenadoras: Joana Ribas Teixeira e Sofia Amaral Quintão", leia-se: "<mark class="ok">Arqueóloga Coordenadora:</mark> Sofia Amaral Quintão. <mark class="ok">Arqueóloga Coordenadora de Campo:</mark> Sofia Amaral Quintão".',
       why:['“Geral e de Campo” não existe nos extratos. Com dois rótulos conhecidos, fica claro que Sofia coordena e também está em campo — informação que pesa na exequibilidade.'] },
     { t:'2ª retificação que ignora a 1ª',
-      bad:'Na Portaria nº 123/2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89, publicada no DOU em 03/03/2026, Seção 1, Página 41, onde se lê: "<mark class="x">Arqueóloga Coordenadora de Campo: Helena Duarte Vasconcelos</mark>", leia-se: "Arqueóloga Coordenadora de Campo: Marina Sátiro Bezerra".',
-      good:'Na Portaria nº 123/2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89, publicada no DOU em 03/03/2026, Seção 1, Página 41, <mark class="ok">em sua 01ª retificação, publicada no DOU em 14/04/2026, Seção 1, Página 18, Retificação,</mark> onde se lê: "<mark class="ok">Arqueólogo Coordenador de Campo: Rodrigo Albuquerque Lins</mark>", leia-se: "Arqueóloga Coordenadora de Campo: Marina Sátiro Bezerra".',
+      bad:'Na Portaria nº 123, de 2 de março de 2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89, publicada no DOU em 03/03/2026, Seção 1, Página 41, onde se lê: "<mark class="x">Arqueóloga Coordenadora de Campo: Helena Duarte Vasconcelos</mark>", leia-se: "Arqueóloga Coordenadora de Campo: Marina Sátiro Bezerra".',
+      good:'Na Portaria nº 123, de 2 de março de 2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89, publicada no DOU em 03/03/2026, Seção 1, Página 41, <mark class="ok">em sua 01ª retificação, publicada no DOU em 14/04/2026, Seção 1, Página 18, Retificação,</mark> onde se lê: "<mark class="ok">Arqueólogo Coordenador de Campo: Rodrigo Albuquerque Lins</mark>", leia-se: "Arqueóloga Coordenadora de Campo: Marina Sátiro Bezerra".',
       why:['Desde 14/04/2026, Helena já não constava: a 1ª retificação a trocou por Rodrigo. Quem lê fica sem saber se a 1ª foi desfeita ou ignorada.'] },
     { t:'Ano da portaria incoerente com o processo',
-      bad:'Na Portaria nº 186/<mark class="x">2025</mark>, Anexo III, Autorização nº 27, Processo nº 01234.000517/<mark class="x">2026</mark>-19, publicada no DOU em 11/09/<mark class="x">2025</mark>, Seção 1, Página 15, onde se lê: "Arqueólogo Coordenador de campo: Otávio Brandão Leme", leia-se: "Arqueólogo Coordenador de Campo: Ícaro Fontenelle Dias".',
-      good:'Na Portaria nº 186/<mark class="ok">2026</mark>, Anexo III, Autorização nº 27, Processo nº 01234.000517/2026-19, publicada no DOU em 11/09/<mark class="ok">2026</mark>, Seção 1, Página 15, onde se lê: "Arqueólogo Coordenador de <mark class="ok">campo</mark>: Otávio Brandão Leme", leia-se: "Arqueólogo Coordenador de Campo: Ícaro Fontenelle Dias".',
+      bad:'Na Portaria nº 186, de 10 de setembro de <mark class="x">2025</mark>, Anexo III, Autorização nº 27, Processo nº 01234.000517/<mark class="x">2026</mark>-19, publicada no DOU em 11/09/<mark class="x">2025</mark>, Seção 1, Página 15, onde se lê: "Arqueólogo Coordenador de campo: Otávio Brandão Leme", leia-se: "Arqueólogo Coordenador de Campo: Ícaro Fontenelle Dias".',
+      good:'Na Portaria nº 186, de 10 de setembro de <mark class="ok">2026</mark>, Anexo III, Autorização nº 27, Processo nº 01234.000517/2026-19, publicada no DOU em 11/09/<mark class="ok">2026</mark>, Seção 1, Página 15, onde se lê: "Arqueólogo Coordenador de <mark class="ok">campo</mark>: Otávio Brandão Leme", leia-se: "Arqueólogo Coordenador de Campo: Ícaro Fontenelle Dias".',
       why:['Um processo aberto em 2026 não pode estar numa portaria de 2025. Com o ano errado, quem procura a portaria no DOU chega a outro ato.','O “campo” minúsculo do onde se lê fica como está: ele reproduz o texto vigente. A correção da maiúscula vai no leia-se.'] },
   ];
   $('#cases').innerHTML = CASOS.map((c,i) => `<article class="case"><header><span class="n">${String(i+1).padStart(2,'0')}</span><h3>${c.t}</h3></header>
@@ -883,11 +1192,11 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
     <div class="col good"><span class="lbl">No extrato padrão</span><p class="dou">${c.good}</p></div></div></article>`).join('');
 
   /* ---------- 5. Ferramenta ---------- */
-  const ROM = ['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+  const ROM = ['I','II','III','IV','V','VI','VII'];
   $('#g-anexo').innerHTML = ROM.map(r => `<option${r==='II'?' selected':''}>${r}</option>`).join('');
-  const gIds = ['port','ano','anexo','tipo','item','proc','data','pag','n','nx','pdata','ppag','onde','leia'];
+  const gIds = ['port','dass','anexo','tipo','item','proc','data','pag','n','nx','pdata','ppag','onde','leia'];
   const pad2 = v => { v = String(v||'').trim(); return /^\d$/.test(v) ? '0'+v : v; };
-  const VAL = { proc:/^\d{5}\.\d{6}\/\d{4}-\d{2}$/, data:/^\d{2}\/\d{2}\/\d{4}$/, pdata:/^\d{2}\/\d{2}\/\d{4}$/, port:/^\d{1,4}$/, ano:/^\d{4}$/, item:/^\d{1,3}$/, pag:/^\d{1,4}$/, ppag:/^\d{1,4}$/, onde:/^[^:]{3,80}: \S/, leia:/^[^:]{3,80}: \S/ };
+  const VAL = { proc:/^\d{5}\.\d{6}\/\d{4}-\d{2}$/, data:/^\d{2}\/\d{2}\/\d{4}$/, pdata:/^\d{2}\/\d{2}\/\d{4}$/, port:/^0*[1-9]\d{0,3}$/, dass:/^\d{2}\/\d{2}\/\d{4}$/, item:/^\d{1,3}$/, pag:/^\d{1,4}$/, ppag:/^\d{1,4}$/, onde:/^[^:]{3,80}: \S/, leia:/^[^:]{3,80}: \S/ };
   let gText = '';
   function gerar(){
     const o = {}; gIds.forEach(k => o[k] = $('#g-'+k).value.trim());
@@ -895,10 +1204,11 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
     o.n = oito ? Math.max(8, parseInt(o.nx, 10) || 8) : +o.n; o.item = pad2(o.item);
     $('#g-nxw').hidden = !oito;
     $('#g-nx').setAttribute('aria-invalid', oito && !(/^\d{1,2}$/.test(o.nx) && +o.nx >= 8));
+    $('#g-nxh').hidden = !oito;
     $('#g-nxh').textContent = oito ? `Esta é a ${String(o.n).padStart(2,'0')}ª; cita a ${String(o.n-1).padStart(2,'0')}ª como anterior.` : '';
     $('#g-prev').hidden = o.n === 1;
     $('#g-prevlg').textContent = `Dados da ${String(o.n-1).padStart(2,'0')}ª retificação (a última publicada)`;
-    Object.entries(VAL).forEach(([k,re]) => { const el = $('#g-'+k); if (k.startsWith('p') && k !== 'port' && k !== 'pag' && k !== 'proc' && o.n === 1) { el.removeAttribute('aria-invalid'); return; } el.setAttribute('aria-invalid', !re.test(el.value.trim())); });
+    Object.entries(VAL).forEach(([k,re]) => { const el = $('#g-'+k); if (k.startsWith('p') && k !== 'port' && k !== 'pag' && k !== 'proc' && o.n === 1) { el.removeAttribute('aria-invalid'); return; } el.setAttribute('aria-invalid', !re.test(el.value.trim()) || (['dass','data','pdata'].includes(k) && dataFutura(el.value.trim()))); });
     const f = frase(o); gText = f.plain;
     $('#g-out').innerHTML = f.html;
     $('#g-copied').textContent = '';
@@ -918,10 +1228,10 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
   $('#tab-g').onclick = () => tab('g'); $('#tab-v').onclick = () => tab('v');
 
   const AMOSTRAS = [
-    'Na Portaria nº 123/2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89, publicada no DOU em 03/03/2026, Seção 1, Página 41, em sua 01ª retificação, publicada no DOU em 14/04/2026, Seção 1, Página 18, Retificação, onde se lê: "Arqueólogo Coordenador de Campo: Rodrigo Albuquerque Lins", leia-se: "Arqueóloga Coordenadora de Campo: Marina Sátiro Bezerra".',
+    'Na Portaria nº 123, de 2 de março de 2026, Anexo II, Autorização nº 07, Processo nº 01234.000567/2026-89, publicada no DOU em 03/03/2026, Seção 1, Página 41, em sua 01ª retificação, publicada no DOU em 14/04/2026, Seção 1, Página 18, Retificação, onde se lê: "Arqueólogo Coordenador de Campo: Rodrigo Albuquerque Lins", leia-se: "Arqueóloga Coordenadora de Campo: Marina Sátiro Bezerra".',
     'Na Portaria N° 131 de 16 de março de 2026, de 17/03/2026, seção I, Anexo III, Autorização n° 12, Página 9, Processo n° 01234.000890/2026-12, onde se lê "Arqueólogo Coordenador de Campo: Tiago Moura Reis", leia-se "Arqueóloga Coordenadora de Campo: Beatriz Lacerda Fontes".',
     'Na Portaria nº 140, de 6 de abril de 2026, Seção 1, Anexo I, Página 12, Autorização nº 03, publicada em 07 de abril de 2026, referente ao processo nº 01234.001122/2025-34, onde se lê "Apoio Institucional: Núcleo de Pesquisas Arqueológicas de Arandiba", leia-se "Museu Municipal de Itaperó"',
-    'Na Portaria nº 186/2025, Anexo III, Autorização nº 27, Processo nº 01234.000517/2026-19, publicada no DOU em 11/09/2025, Seção 1, Página 15, onde se lê: "Arqueólogo Coordenador de campo: Otávio Brandão Leme", leia-se: "Arqueólogo Coordenador de Campo: Ícaro Fontenelle Dias".'
+    'Na Portaria nº 186, de 10 de setembro de 2025, Anexo III, Autorização nº 27, Processo nº 01234.000517/2026-19, publicada no DOU em 11/09/2025, Seção 1, Página 15, onde se lê: "Arqueólogo Coordenador de campo: Otávio Brandão Leme", leia-se: "Arqueólogo Coordenador de Campo: Ícaro Fontenelle Dias".'
   ];
   document.querySelectorAll('.samples button').forEach(b => b.onclick = () => { $('#v-in').value = AMOSTRAS[+b.dataset.s]; verificar(); });
   let vt; $('#v-in').addEventListener('input', () => { clearTimeout(vt); vt = setTimeout(verificar, 250); });
@@ -947,7 +1257,10 @@ if (typeof module !== 'undefined') module.exports = { analisar, analisarLote, no
     $('#v-res').innerHTML = h;
   }
   $('#v-in').value = AMOSTRAS[1]; verificar();
-  ajudaInstalar({ 'g-port':'port', 'g-ano':'ano', 'g-anexo':'anexo', 'g-tipo':'tipo', 'g-item':'item', 'g-proc':'proc', 'g-data':'data', 'g-pag':'pag', 'g-n':'n', 'g-nx':'nx', 'g-pdata':'pdata', 'g-ppag':'ppag', 'g-onde':'onde', 'g-leia':'leia' });
+  datasInstalar({ 'g-dass':null, 'g-data':'g-dass', 'g-pdata':'g-data' });
+  processoInstalar(['g-proc']);
+  numerosInstalar({ 'g-port':[4,'semzero'], 'g-item':3, 'g-pag':4, 'g-ppag':4 });
+  ajudaInstalar({ 'g-port':'port', 'g-dass':'dass', 'g-anexo':'anexo', 'g-tipo':'tipo', 'g-item':'item', 'g-proc':'proc', 'g-data':'data', 'g-pag':'pag', 'g-n':'n', 'g-nx':'nx', 'g-pdata':'pdata', 'g-ppag':'ppag', 'g-onde':'onde', 'g-leia':'leia' });
 })();
 </script>
 
